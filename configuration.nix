@@ -6,7 +6,7 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ 
       ./hardware-configuration.nix
     ];
 
@@ -34,6 +34,8 @@
       set fish_greeting # Disable greeting
     '';
   };
+
+
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -73,13 +75,8 @@
     options = "--delete-older-than 1w";
   };
 
-   nix.settings.auto-optimise-store = true;
+  nix.settings.auto-optimise-store = true;
   users.defaultUserShell = pkgs.fish;
-
-  nix.settings = {
-    substituters = ["https://nix-gaming.cachix.org"];
-    trusted-public-keys = ["nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="];
-  };
 
 
   # Configure console keymap
@@ -109,12 +106,10 @@
      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
    };
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+
+  
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wineWowPackages.stable
-    ly
+    sqlite
   ];
 
 
@@ -155,7 +150,7 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
