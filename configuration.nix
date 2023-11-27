@@ -95,6 +95,7 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  
   programs.hyprland = {
     enable = true;
     enableNvidiaPatches = true;
