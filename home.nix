@@ -43,6 +43,7 @@ in
 
   home.packages = with pkgs; [
     swaybg
+    zellij
    	
     joshuto
     wineWowPackages.stable 
@@ -120,6 +121,7 @@ in
     grim
     slurp
     wl-clipboard
+    zathura
 
     #fonts
     nerdfonts
