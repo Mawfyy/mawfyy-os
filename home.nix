@@ -24,7 +24,7 @@ let
     };
     name = "bibata_cursor";
     installPhase = ''
-      mkdir $out/share/icons
+      mkdir -p $out/share/icons
       ln -s $src $out/share/icons/Youmu-cursor
     '';
   };
@@ -52,6 +52,11 @@ in
     "Xft.dpi" = 172;
   };
 
+  programs.git = {
+    enable = true;
+    userName = "Mawfyy";
+    userEmail = "94380448+Mawfyy@users.noreply.github.com";
+  };
   
 
   nixpkgs.config.allowUnfree = true;
@@ -59,7 +64,7 @@ in
   home.packages = with pkgs; [
     swaybg
     zellij
-    git
+    
 
    	
     joshuto
