@@ -22,7 +22,10 @@
     
             home-manager.users.mawfy = import ./home.nix;
 
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+            home-manager.extraSpecialArgs = {
+              inherit self;
+              last_pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            }; 
           }
     ];
    };

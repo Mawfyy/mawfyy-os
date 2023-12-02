@@ -15,6 +15,8 @@
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
+  programs.river.enable = true;
+  
   networking.hostName = "nixos"; # Define your hostname.
   #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -34,7 +36,6 @@
       set fish_greeting # Disable greeting
     '';
   };
-
 
 
   # Select internationalisation properties.
@@ -58,6 +59,8 @@
     layout = "latam";
     xkbVariant = "deadtilde";
   };
+
+  services.xserver.desktopManager.plasma5.enable = true;
 
   services.picom.enable = true;
   services.devmon.enable = true;
@@ -95,11 +98,6 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  
-  programs.hyprland = {
-    enable = true;
-    enableNvidiaPatches = true;
-  };
 
   
    programs.steam = {
