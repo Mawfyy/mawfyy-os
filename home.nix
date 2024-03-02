@@ -1,74 +1,31 @@
-{ config, pkgs,  ... }:
-let 
-  breeze = pkgs.stdenv.mkDerivation {
-    name = "breeze_cursor";
-    src = pkgs.fetchzip {
-      url = "https://github.com/polirritmico/Breeze-Dark-Cursor/releases/download/v1.0/Breeze_Dark_v1.0.tar.gz";
-      sha256 = "sha256-FgqS3rHJ4o5x4ONSaDZlQu1sFhefhWPk8vaBvURKZzY=";
-    };
-    installPhase = ''
-      mkdir -p $out/share/icons
-      ln -s $src $out/share/icons/Breeze_dark
-    '';
-  };
-
-  wallpaper = pkgs.fetchgit {
-      url = "https://github.com/Mawfyy/configuration_nix/blob/main/wallpaper/nixos_logo_rainbow.png";
-      hash = "";
-  };
-
-  youmu = pkgs.stdenv.mkDerivation {
-    src = pkgs.fetchzip {
-      url = "https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.4/Bibata-Modern-Amber.tar.xz";
-      hash = "sha256-6oB+qakgXY2tX079mUHEbAorrLoXMMHKYznqk4O5tWA=";
-    };
-    name = "bibata_cursor";
-    installPhase = ''
-      mkdir -p $out/share/icons
-      ln -s $src $out/share/icons/Youmu-cursor
-    '';
-  };
-  
-    
-in
 {
+  config,
+  pkgs,
+  ...
+}: 
+ {
 
-  home.username = "mawfy";
-  home.homeDirectory = "/home/mawfy";
-  home.pointerCursor = {
-    gtk.enable = true;
-    name = "Breeze_cursor";
-    size = 48;
-    x11.enable = true;
-    package = youmu;
-  };
-
-  home.file."icons/default".source = "${breeze}/share/icons/Breeze_dark";
-  #home.file."wallpaper/".source = "${wallpaper}";
-
-  # set cursor size and dpi for 4k monitor
-  xresources.properties = {
-  #"Xcursor.size" = 16;
-    "Xft.dpi" = 172;
-  };
+  imports = [
+    ./programs/river
+  ];
 
   programs.git = {
     enable = true;
     userName = "Mawfyy";
     userEmail = "94380448+Mawfyy@users.noreply.github.com";
   };
-  
 
   nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
     swaybg
     zellij
-    
+    bemenu
 
-   	
     joshuto
-    wineWowPackages.stable 
+    wineWowPackages.stable
+    feh
+    just
 
     # archives
     zip
@@ -86,12 +43,12 @@ in
     # networking tools
     mtr # A network diagnostic tool
     iperf3
-    dnsutils  # `dig` + `nslookup`
+    dnsutils # `dig` + `nslookup`
     ldns # replacement of `dig`, it provide the command `drill`
     aria2 # A lightweight multi-protocol & multi-source command-line download utility
     socat # replacement of openbsd-netcat
     nmap # A utility for network discovery and security auditing
-    ipcalc  # it is a calculator for the IPv4/v6 addresses
+    ipcalc # it is a calculator for the IPv4/v6 addresses
 
     # misc
     cowsay
@@ -114,7 +71,7 @@ in
     hugo # static site generator
     glow # markdown previewer in terminal
 
-    btop  # replacement of htop/nmon
+    btop # replacement of htop/nmon
     iotop # io monitoring
     iftop # network monitoring
 
@@ -130,13 +87,10 @@ in
     pciutils # lspci
     usbutils # lsusb
 
-
     spotify
     xfce.thunar
     lutris
     alacritty
-    brave
-    wofi
     grim
     slurp
     wl-clipboard
@@ -145,9 +99,14 @@ in
     #fonts
     nerdfonts
     iosevka
+
+    (discord.override {
+      withVencord = true;
+      withOpenASAR = true;
+    })
   ];
 
-   programs.helix = {
+  programs.helix = {
     enable = true;
     defaultEditor = true;
     settings = {
@@ -159,22 +118,22 @@ in
           name = "rust";
           auto-format = true;
         }
+        {
+          name = "typescript";
+          auto-format = true;
+        }
       ];
     };
   };
 
-
-  programs.wofi.enable = true;
-
-  
   programs.alacritty = {
     enable = true;
     settings = {
-    window = {
-      dynamic_padding = true;
-      opacity = 0.9;
-    };
-    background-opacity = 1.0;
+      window = {
+        dynamic_padding = true;
+        opacity = 0.9;
+      };
+      background-opacity = 1.0;
       env.TERM = "xterm-256color";
       font = {
         size = 12;
@@ -184,7 +143,7 @@ in
         };
 
         bold = {
-          family =  "Iosevka";
+          family = "Iosevka";
           style = "Medium";
         };
 
@@ -198,10 +157,6 @@ in
       selection.save_to_clipboard = true;
     };
   };
-
- 
-
-   
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage

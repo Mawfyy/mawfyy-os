@@ -1,44 +1,34 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, ... }:
-
 {
-  imports =
-    [ 
-      ./hardware-configuration.nix
-    ];
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    ./hardware-configuration.nix
+    ./overlays
+  ];
 
-  # Bootloader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
   programs.river.enable = true;
-  
-  networking.hostName = "nixos"; # Define your hostname.
-  #networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
+  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "America/Bogota";
-  
-   programs.fish = {
+
+  programs.fish = {
     enable = true;
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
     '';
   };
 
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -53,25 +43,24 @@
     LC_TIME = "es_CO.UTF-8";
   };
 
-  # Configure keymap in X11
   services.xserver = {
     enable = true;
     layout = "latam";
     xkbVariant = "deadtilde";
+    dpi = 96;
   };
 
-  services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.windowManager.leftwm.enable = true;
 
   services.picom.enable = true;
   services.devmon.enable = true;
-	services.gvfs.enable = true;
-	services.udisks2.enable = true;
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
 
   services.xserver.displayManager.lightdm.enable = true;
 
-   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  
-  #delete or free space from other generations
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -81,45 +70,52 @@
   nix.settings.auto-optimise-store = true;
   users.defaultUserShell = pkgs.fish;
 
-
-  # Configure console keymap
   console.keyMap = "la-latin1";
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mawfy = {
     isNormalUser = true;
     description = "mawfy";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [];
   };
 
+  services.xserver.videoDrivers = ["nvidiaLegacy304"];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = false;
 
-  services.xserver.videoDrivers = [ "nvidiaLegacy304" ];
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
+  };
 
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  
-   programs.steam = {
-     enable = true;
-     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-   };
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; 
+    dedicatedServer.openFirewall = true;
+  };
 
-  
   environment.systemPackages = with pkgs; [
     sqlite
+    nodejs_21
+    nodePackages_latest.typescript-language-server
   ];
 
-
+  environment.variables = {
+    EDITOR = "hx";
+    WALLPAPER = builtins.toString ./wallpaper/wallpaper.jpeg;
+  };
 
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
 
   hardware.opengl = {
-	enable = true;
-	driSupport = true;
+    enable = true;
+    driSupport = true;
   };
 
   security.rtkit.enable = true;
@@ -128,41 +124,23 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
-    xdg.portal.wlr.enable = true;
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      config = {
+        common.default = ["gtk"];
+      }; 
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
+        xdg-desktop-portal-wlr
+      ];
+    };
+  };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.05"; # Did you read the comment?
-
+  system.stateVersion = "23.05";
 }
