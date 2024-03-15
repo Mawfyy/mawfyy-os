@@ -1,8 +1,9 @@
 # Getting started
-advise: You should already installed nixOS.
+> [!IMPORTANT]
+You should already installed nixOS.
 
 
-What i use on my workflow?
+### What i use on my workflow?
 - riverWM (compositor wayland)
 - alacritty (terminal)
 - grim + slurp (screenshots)
