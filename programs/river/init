@@ -169,4 +169,4 @@ riverctl keyboard-layout es
 riverctl focus-follows-cursor always
 riverctl hide-cursor when-typing enabled
 riverctl spawn "swaybg -i $WALLPAPER"
-rivertile -view-padding 3 -outer-padding 2 &
+rivertile -view-padding 3 -outer-padding 0 &

@@ -1,5 +1,7 @@
-{config, pkgs, ...}: {
-	home.file.".config/river/init".source = ./init;	
+{
+  config,
+  pkgs,
+  ...
+}: {
+  home.file.".config/river/init".source = ./init;
 }
-
-
