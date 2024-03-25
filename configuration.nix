@@ -20,6 +20,18 @@
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
+  services.mullvad-vpn.enable = true;
+  networking.nameservers = ["1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" "8.8.8.8"];
+
+
+  services.resolved = {
+    enable = true;
+    dnssec = "true";
+    domains = ["~."];
+    fallbackDns = ["1.1.1.1#one.one.one.one" "1.0.0.1#one.one.one.one" "8.8.8.8"];
+    dnsovertls = "true";
+  };
+
   time.timeZone = "America/Bogota";
 
   programs.fish = {
@@ -50,14 +62,17 @@
     dpi = 96;
   };
 
-  services.xserver.windowManager.leftwm.enable = true;
-
-  services.picom.enable = true;
   services.devmon.enable = true;
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
-  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.displayManager = {
+    lightdm.enable = true;
+    autoLogin = {
+      enable = true;
+      user = "mawfy";
+    };
+  };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
@@ -76,7 +91,7 @@
     isNormalUser = true;
     description = "mawfy";
     extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [];
+    packages = [];
   };
 
   services.xserver.videoDrivers = ["nvidiaLegacy304"];
@@ -87,6 +102,7 @@
     open = false;
 
     nvidiaSettings = true;
+
     package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
   };
 
@@ -94,19 +110,36 @@
 
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; 
+    remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
   };
+
+  services.dbus.enable = true;
 
   environment.systemPackages = with pkgs; [
     sqlite
     nodejs_21
     nodePackages_latest.typescript-language-server
+    nil
+    
+    pinentry-curses
+  ];
+
+  fonts.fonts = with pkgs; [
+    nerdfonts
+    iosevka
   ];
 
   environment.variables = {
     EDITOR = "hx";
     WALLPAPER = builtins.toString ./wallpaper/wallpaper.jpeg;
+  };
+
+
+   programs.gnupg.agent = {
+	  enable = true;
+	  enableSSHSupport = true;
+	  pinentryFlavor = "tty";
   };
 
   # Enable sound with pipewire.
@@ -116,6 +149,7 @@
   hardware.opengl = {
     enable = true;
     driSupport = true;
+    driSupport32Bit = true;
   };
 
   security.rtkit.enable = true;
@@ -129,14 +163,9 @@
   xdg = {
     portal = {
       enable = true;
-      xdgOpenUsePortal = true;
-      config = {
-        common.default = ["gtk"];
-      }; 
-
+      wlr.enable = true;
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
-        xdg-desktop-portal-wlr
       ];
     };
   };
