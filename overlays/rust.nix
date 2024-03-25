@@ -12,11 +12,11 @@ in {
     rust-overlay.overlays.default
   ];
 
-  environment.systemPackages = with pkgs;[
-      rust-pkg
-      pkg-config
-      openssl
-      gcc
-      rust-analyzer  
-    ];
+  environment.systemPackages = with pkgs; [
+    rust-pkg
+    pkg-config
+    openssl
+    gcc
+    rust-analyzer
+  ];
 }

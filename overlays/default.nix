@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ./firefox.nix
     ./rust.nix
+    #./firefox.nix
   ];
 }

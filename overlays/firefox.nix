@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  firefox-pkgs = pkgs.firefox-devedition-unwrapped.override {
+  firefox-pkgs = pkgs.firefox-unwrapped.override {
     pipewireSupport = true;
   };
 in {
